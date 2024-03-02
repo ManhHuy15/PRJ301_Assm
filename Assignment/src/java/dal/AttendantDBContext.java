@@ -25,7 +25,7 @@ public class AttendantDBContext extends DBContext {
         ArrayList<Attendant> sqlAtt = getAttendant(sesid);
         System.out.println(sqlAtt.size());
         for (Attendant attend : attendance) {
-            if (sqlAtt.size() == 0) {
+            if (sqlAtt.isEmpty()) {
                 System.out.println(attend.getStudent().getId() + " insert");
                 insertAttend(attend);
             } else {
@@ -34,9 +34,13 @@ public class AttendantDBContext extends DBContext {
                     if (attend.getStudent().getId() == sqlatt.getStudent().getId()) {
                         System.out.println(attend.getStudent().getId() + " update");
                         updateAttend(attend, sesid, attend.getStudent().getId());
+                        sqlAtt.remove(sqlatt);
+                        break;
                     } else {
                         System.out.println(attend.getStudent().getId() + " insert");
                         insertAttend(attend);
+                         sqlAtt.remove(sqlatt);
+                        break;
                     }
                 }
             }

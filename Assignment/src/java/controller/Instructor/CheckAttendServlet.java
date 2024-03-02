@@ -8,10 +8,8 @@ import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.AttendantDBContext;
 import dal.StudentDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -64,8 +62,8 @@ public class CheckAttendServlet extends BaseRequiredAuthenticionServlet {
         
         AttendantDBContext attDB = new AttendantDBContext();
        attDB.checkAttendBySession(sesid, attendance);
-        
-       //CHUYEN HUONG DEN TRANG NAO DO HOP LI ???
+        request.setAttribute("done", "Attendance check completed!");
+        request.getRequestDispatcher("Instructor/checkAttend.jsp").forward(request, response);
     }
 
    

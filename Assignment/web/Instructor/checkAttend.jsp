@@ -15,26 +15,32 @@
     <body>
         <%@include file="/topbar.jsp" %>
         <button onclick="window.location.href = 'HomeInstructor'" >Home </button>
-        <h1>Check Attend</h1>
-        <form action= "CheckAttend" method="POST">
-             <input type="hidden" name="id" value="${param.id}"/>
-            <table >
-                <thead style="background-color: orange">
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Status</th>
-                        <th>Comment</th>
-                        <th>Record Time</th>
-                    </tr>
-                </thead>
-                <tbody style="background-color: antiquewhite">
-                    <c:set var = "no" value = "${1}"/>
-                    <c:forEach items="${requestScope.atts}" var="att">
+        <button onclick="window.location.href = 'ScheduleInstructor'" >Schedule</button>
+
+        <div <c:if test="${requestScope.done == null}"> style="visibility: hidden"</c:if>>
+            <div style="color: green; font-weight: bold; text-align: center; font-size: 24px">${requestScope.done}</div>
+        </div>
+        <div <c:if test="${requestScope.done != null}"> style="visibility: hidden"</c:if>>
+                <h1>Check Attend</h1>
+                <form action= "CheckAttend" method="POST">
+                    <input type="hidden" name="id" value="${param.id}"/>
+                <table >
+                    <thead style="background-color: orange">
                         <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Comment</th>
+                            <th>Record Time</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: antiquewhite">
+                        <c:set var = "no" value = "${1}"/>
+                        <c:forEach items="${requestScope.atts}" var="att">
+                            <tr>
                                 <td>${no}</td>
-                                    <c:set var = "no" value = "${no +1}"/>
+                                <c:set var = "no" value = "${no +1}"/>
                                 <td>${att.student.fname} ${att.student.mname} ${att.student.lname}</td>
                                 <td>${att.student.code}</td>
                                 <td>
@@ -45,11 +51,12 @@
                                 </td>
                                 <td><input name="cmt${att.student.id}" type="text" value="${att.comment}"></td>
                                 <td>${att.recordTime}</td>
-                        </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-                    <input type="submit" value="Save">
-        </form>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                <input type="submit" value="Save">
+            </form>
+        </div>
     </body>
 </html>
