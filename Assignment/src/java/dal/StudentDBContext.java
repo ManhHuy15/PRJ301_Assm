@@ -62,7 +62,7 @@ public class StudentDBContext extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, seid);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Student s = new Student();
                 s.setId(rs.getInt("id"));
                 s.setCode(rs.getString("code"));
@@ -72,6 +72,32 @@ public class StudentDBContext extends DBContext {
                 s.setGender(rs.getBoolean("isGender"));
                 s.setEmail(rs.getString("email"));
                 s.setImgSrc(rs.getString("image_src"));
+
+                students.add(s);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return students;
+    }
+
+    public ArrayList<Student> getStudentByGroup(int gid) {
+        ArrayList<Student> students = new ArrayList<>();
+        String sql = "SELECT s.id, s.code,s.first_name, s.mid_name,s.last_name\n"
+                + "FROM    Students s JOIN HasGroup hg ON s.id = hg.sid\n"
+                + "		JOIN Groups g ON hg.gid = g.id\n"
+                + "WHERE gid = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, gid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Student s = new Student();
+                s.setId(rs.getInt("id"));
+                s.setCode(rs.getString("code"));
+                s.setFname(rs.getString("first_name"));
+                s.setMname(rs.getString("mid_name"));
+                s.setLname(rs.getString("last_name"));
                 
                 students.add(s);
             }
