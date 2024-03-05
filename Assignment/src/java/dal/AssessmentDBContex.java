@@ -24,6 +24,56 @@ import model.Term;
  */
 public class AssessmentDBContex extends DBContext {
 
+    public void insertAssessment(ArrayList<Assessment> checkAssessments) {
+        try {
+            connection.setAutoCommit(false);
+            String sql = "INSERT INTO [dbo].[Assessment ]\n"
+                    + "           ([score]\n"
+                    + "           ,[weight]\n"
+                    + "           ,[required]\n"
+                    + "           ,[sid]\n"
+                    + "           ,[insid]\n"
+                    + "           ,[gradeid]\n"
+                    + "           ,[cid]\n"
+                    + "           ,[dateTime])\n"
+                    + "     VALUES\n"
+                    + "           (?\n"
+                    + "           ,?\n"
+                    + "           ,?\n"
+                    + "           ,?\n"
+                    + "           ,?\n"
+                    + "           ,?\n"
+                    + "           ,?\n"
+                    + "           ,GETDATE())";
+            
+            PreparedStatement st = connection.prepareStatement(sql);
+            for (Assessment ass : checkAssessments) {
+                st.setFloat(1, ass.getScore());
+                st.setFloat(2, ass.getWeight());
+                st.setString(3, ass.getRequired());
+                st.setInt(4, ass.getStudent().getId());
+                st.setInt(5, ass.getIns().getId());
+                st.setInt(6, ass.getGrade().getId());
+                st.setInt(7, ass.getCourse().getId());
+                 st.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(AssessmentDBContex.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+            Logger.getLogger(AssessmentDBContex.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(AttendantDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public ArrayList<Assessment> getAssBySidCid(int sid, int cid, Term t) {
         ArrayList<Assessment> assessments = new ArrayList<>();
         String sql = "SELECT  a.id, \n"
@@ -55,37 +105,37 @@ public class AssessmentDBContex extends DBContext {
             st.setDate(3, t.getStart());
             st.setDate(4, t.getEnd());
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {                
+            while (rs.next()) {
                 Assessment a = new Assessment();
                 a.setId(rs.getInt("id"));
                 a.setScore(rs.getFloat("score"));
                 a.setRequired(rs.getString("required"));
                 a.setWeight(rs.getFloat("weight"));
-                
+
                 a.setDateRecord(rs.getDate("dateRecord"));
-                
+
                 Student s = new Student();
                 s.setId(rs.getInt("sid"));
                 s.setCode(rs.getString("scode"));
                 a.setStudent(s);
-                
+
                 Grade g = new Grade();
                 g.setId(rs.getInt("gradeid"));
                 g.setName(rs.getString("gradeName"));
-                
+
                 GradeCate gc = new GradeCate();
                 gc.setId(rs.getInt("cateid"));
                 gc.setName(rs.getString("gradeCate"));
                 g.setCate(gc);
-                
+
                 a.setGrade(g);
-                
+
                 Course c = new Course();
                 c.setId(rs.getInt("cid"));
                 c.setCode(rs.getString("courseCode"));
                 a.setCourse(c);
-                
-                assessments.add(a);       
+
+                assessments.add(a);
             }
         } catch (SQLException ex) {
             Logger.getLogger(AssessmentDBContex.class.getName()).log(Level.SEVERE, null, ex);
@@ -93,7 +143,50 @@ public class AssessmentDBContex extends DBContext {
         return assessments;
     }
 
-    
+    public ArrayList<Assessment> listAssessmentsbyInsid(int insid, int cid) {
+        ArrayList<Assessment> list = new ArrayList();
+        String sql = "SELECT [id]\n"
+                + "      ,[score]\n"
+                + "      ,[weight]\n"
+                + "      ,[required]\n"
+                + "      ,[sid]\n"
+                + "      ,[insid]\n"
+                + "      ,[gradeid]\n"
+                + "      ,[cid]\n"
+                + "      ,[dateTime]\n"
+                + "  FROM [dbo].[Assessment ]\n"
+                + "  WHERE cid = ? AND insid = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, cid);
+            st.setInt(2, insid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Assessment a = new Assessment();
+                a.setId(rs.getInt("id"));
+                a.setScore(rs.getFloat("score"));
+                a.setRequired(rs.getString("required"));
+                a.setWeight(rs.getFloat("weight"));
+                Student s = new Student();
+                s.setId(rs.getInt("sid"));
+                a.setStudent(s);
+
+                Grade g = new Grade();
+                g.setId(rs.getInt("gradeid"));
+                a.setGrade(g);
+
+                Course c = new Course();
+                c.setId(rs.getInt("cid"));
+                a.setCourse(c);
+
+                list.add(a);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AssessmentDBContex.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         AssessmentDBContex adb = new AssessmentDBContex();
         Term t = new Term();

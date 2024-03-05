@@ -20,7 +20,7 @@ import model.GradeCate;
  * @author HUY
  */
 public class GradeDBContext extends DBContext {
-
+ 
     public ArrayList<CourseGrade> getCourseGradesByCid(int cid) {
         ArrayList<CourseGrade> grades = new ArrayList<>();
         String sql = "SELECT cid, cateid, gcate.name as cateName ,  gradeid, g.name as gradeName, weight, required, gcate.priority\n"
@@ -57,7 +57,6 @@ public class GradeDBContext extends DBContext {
         }
         return grades;
     }
-
     public ArrayList<GradeCate> getGradeCateByCid(int cid) {
         ArrayList<GradeCate> gradeCates = new ArrayList<>();
         String sql = "SELECT DISTINCT cateid, gcate.name as cateName ,  gcate.priority\n"

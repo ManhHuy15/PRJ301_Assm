@@ -4,16 +4,21 @@
  */
 package model;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author HUY
  */
 public class Groups {
+
     private int id;
     private String name;
     private Course couse;
     private Instructor ins;
     private Term term;
+    private ArrayList<Student> listStudent;
+
     public int getId() {
         return id;
     }
@@ -53,7 +58,13 @@ public class Groups {
     public void setTerm(Term term) {
         this.term = term;
     }
-    
-    
-    
+
+    public ArrayList<Student> getListStudent() {
+        return listStudent;
+    }
+
+    public void setListStudent(ArrayList<Student> listStudent) {
+        this.listStudent = listStudent;
+    }
+
 }

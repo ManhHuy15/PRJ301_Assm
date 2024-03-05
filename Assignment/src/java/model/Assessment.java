@@ -12,6 +12,11 @@ import java.sql.Date;
  */
 public class Assessment {
 
+    @Override
+    public String toString() {
+        return "Assessment{" + "id=" + id + ", score=" + score + ", weight=" + weight + ", required=" + required + ", student=" + student.getId() + ", ins=" + ins.getId() + ", grade=" + grade.getId() + ", course=" + course.getId() + ", dateRecord=" + dateRecord + '}';
+    }
+
     private int id;
     private float score;
     private float weight;

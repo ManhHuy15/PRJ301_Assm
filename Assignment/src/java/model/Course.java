@@ -14,7 +14,7 @@ public class Course {
     private String name;
     private int did;
     private int detailid;
-
+    
     public int getId() {
         return id;
     }

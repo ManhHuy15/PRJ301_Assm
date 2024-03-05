@@ -4,7 +4,10 @@
  */
 package controller.Instructor;
 
+import dal.AssessmentDBContex;
+import dal.CoursesDBContext;
 import dal.GradeDBContext;
+import dal.GroupsDBContext;
 import dal.StudentDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,7 +17,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import model.Assessment;
+import model.Course;
 import model.CourseGrade;
+import model.Groups;
+import model.Instructor;
 import model.Student;
 
 /**
@@ -27,21 +34,65 @@ public class GradeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int cid = 1;
-        int gid = 1;
-        StudentDBContext sdb = new StudentDBContext();
+        int insid = 1;
+        int gid = 1; // group
         GradeDBContext gdb = new GradeDBContext();
+        GroupsDBContext groupsdb = new GroupsDBContext();
+        AssessmentDBContex adb = new AssessmentDBContex();
 
-        ArrayList<CourseGrade> grades = gdb.getCourseGradesByCid(cid);
-        ArrayList<Student> listStudent = sdb.getStudentByGroup(gid);
-        request.setAttribute("grades",  grades);
-        request.setAttribute("listStudent", listStudent);
+        Groups g = groupsdb.getGroupsById(gid);
+        ArrayList<CourseGrade> grades = gdb.getCourseGradesByCid(g.getCouse().getId());
+        ArrayList<Assessment> assessments = adb.listAssessmentsbyInsid(insid, g.getCouse().getId());
+        request.setAttribute("group", g);
+        request.setAttribute("grades", grades);
+        request.setAttribute("assessments", assessments);
         request.getRequestDispatcher("Instructor/checkGrade.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int insid = 1;
+        int gid = Integer.parseInt(request.getParameter("group"));
+        GradeDBContext gdb = new GradeDBContext();
+        GroupsDBContext groupsdb = new GroupsDBContext();
+        AssessmentDBContex adb = new AssessmentDBContex();
+
+        ArrayList<Assessment> checkAssessments = new ArrayList<>();
+
+        Groups g = groupsdb.getGroupsById(gid);
+        ArrayList<CourseGrade> grades = gdb.getCourseGradesByCid(g.getCouse().getId());
+        ArrayList<Assessment> assessments = adb.listAssessmentsbyInsid(insid, g.getCouse().getId());
+
+        for (CourseGrade courseGrade : grades) {
+            for (Student student : g.getListStudent()) {
+                Assessment a = new Assessment();
+                String score_raw = request.getParameter("score_" + student.getId() + "_" + courseGrade.getGrade().getId());
+                if ((score_raw != null) && (!score_raw.isEmpty())) {
+                    float score = Float.parseFloat(score_raw);
+                    a.setScore(score);
+                    a.setWeight(courseGrade.getWeight());
+                    a.setRequired(courseGrade.getRequired());
+                    a.setStudent(student);
+
+                    Instructor ins = new Instructor();
+                    ins.setId(insid);
+                    a.setIns(ins);
+
+                    a.setGrade(courseGrade.getGrade());
+                    a.setCourse(g.getCouse());
+
+                    checkAssessments.add(a);
+                    System.out.println(a);
+                }
+            }
+        }
+
+        adb.insertAssessment(checkAssessments);
+//        request.setAttribute("group", g);
+//        request.setAttribute("grades", grades);
+//        request.setAttribute("assessments", assessments);
+//        request.getRequestDispatcher("Instructor/checkGrade.jsp").forward(request, response);
     }
 
 }

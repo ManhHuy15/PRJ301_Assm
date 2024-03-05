@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import model.Course;
 import model.Term;
 import model.Groups;
+import model.Student;
 
 /**
  *
@@ -32,25 +33,65 @@ public class GroupsDBContext extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, sid);
             st.setInt(2, T.getId());
-            
+
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Groups g = new Groups();
                 g.setId(rs.getInt("gid"));
                 g.setName(rs.getString("groupName"));
-                
+
                 Course c = new Course();
                 c.setId(rs.getInt("cid"));
                 c.setCode(rs.getString("courseCode"));
                 c.setName(rs.getString("courseName"));
-                g.setCouse(c);             
+                g.setCouse(c);
                 g.setTerm(T);
-                
-                groupses.add(g);           
+
+                groupses.add(g);
             }
         } catch (SQLException ex) {
             Logger.getLogger(GroupsDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return groupses;
+    }
+
+    public Groups getGroupsById(int gid) {
+        Groups g = new Groups();
+        g.setId(gid);
+        
+        ArrayList<Student> students = new ArrayList<>();
+        String sql = "SELECT g.id, g.name, g.cid,c.code as courseCode, c.name as courseName , hg.sid, s.code, s.first_name,s.mid_name,s.last_name\n"
+                + "FROM Groups g JOIN HasGroup hg ON g.id = hg.gid\n"
+                + "	JOIN Courses c ON g.cid = c.id\n"
+                + "	JOIN Students s ON hg.sid = s.id\n"
+                + "WHERE g.id = ? ";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, gid);
+            ResultSet rs = st.executeQuery();
+ 
+            while (rs.next()) {
+                g.setName(rs.getString("name"));
+
+                Course c = new Course();
+                c.setId(rs.getInt("cid"));
+                c.setCode(rs.getString("courseCode"));
+                c.setName(rs.getString("courseName"));
+                g.setCouse(c);
+
+                Student s = new Student();
+                s.setId(rs.getInt("sid"));
+                s.setCode(rs.getString("code"));
+                s.setFname(rs.getString("first_name"));
+                s.setMname(rs.getString("mid_name"));
+                s.setLname(rs.getString("last_name"));
+                students.add(s);
+            }
+            g.setListStudent(students);
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupsDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return g;
     }
 }
