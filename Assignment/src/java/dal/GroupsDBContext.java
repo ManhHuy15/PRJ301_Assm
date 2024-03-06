@@ -21,6 +21,41 @@ import model.Student;
  */
 public class GroupsDBContext extends DBContext {
 
+    public ArrayList<Groups> getGroupsByTermAndIns(Term T, int insid, int cid) {
+        ArrayList<Groups> groupses = new ArrayList<>();
+        String sql = "SELECT g.[id]\n"
+                + "      ,g.[name] as groupName\n"
+                + "      ,[cid]\n"
+                + "      ,[insid]\n"
+                + "      ,[tid], c.code,c.name as courseName\n"
+                + "  FROM [dbo].[Groups] g JOIN Courses c ON g.cid = c.id \n"
+                + "  WHERE insid = ? AND tid = ? AND cid = ?" ;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, insid);
+            st.setInt(2, T.getId());
+            st.setInt(3,cid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Groups g = new Groups();
+                g.setId(rs.getInt("id"));
+                g.setName(rs.getString("groupName"));
+
+                Course c = new Course();
+                c.setId(rs.getInt("cid"));
+                c.setCode(rs.getString("code"));
+                c.setName(rs.getString("courseName"));
+                g.setCouse(c);
+                g.setTerm(T);
+
+                groupses.add(g);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupsDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return groupses;
+    }
+
     public ArrayList<Groups> getGroupsByTermAndSID(Term T, int sid) {
         ArrayList<Groups> groupses = new ArrayList<>();
         String sql = "SELECT hg.gid, g.name as groupName, g.cid, c.code as courseCode, c.name as courseName\n"
@@ -58,9 +93,9 @@ public class GroupsDBContext extends DBContext {
     public Groups getGroupsById(int gid) {
         Groups g = new Groups();
         g.setId(gid);
-        
+
         ArrayList<Student> students = new ArrayList<>();
-        String sql = "SELECT g.id, g.name, g.cid,c.code as courseCode, c.name as courseName , hg.sid, s.code, s.first_name,s.mid_name,s.last_name\n"
+        String sql = "SELECT g.id, g.name, g.cid,c.code as courseCode, c.name as courseName , hg.sid, s.code, s.first_name,s.mid_name,s.last_name,s.isGender,s.email\n"
                 + "FROM Groups g JOIN HasGroup hg ON g.id = hg.gid\n"
                 + "	JOIN Courses c ON g.cid = c.id\n"
                 + "	JOIN Students s ON hg.sid = s.id\n"
@@ -70,7 +105,7 @@ public class GroupsDBContext extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, gid);
             ResultSet rs = st.executeQuery();
- 
+
             while (rs.next()) {
                 g.setName(rs.getString("name"));
 
@@ -86,6 +121,8 @@ public class GroupsDBContext extends DBContext {
                 s.setFname(rs.getString("first_name"));
                 s.setMname(rs.getString("mid_name"));
                 s.setLname(rs.getString("last_name"));
+                s.setGender(rs.getBoolean("isGender"));
+                s.setEmail(rs.getString("email"));
                 students.add(s);
             }
             g.setListStudent(students);

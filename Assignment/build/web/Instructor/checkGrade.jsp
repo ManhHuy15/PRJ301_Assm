@@ -20,9 +20,13 @@
         </script>
     </head>
     <body>
+        <%@include file="../topbar.jsp" %>
+
+        <button onclick="window.location.href = 'AllGroup'" >Back </button>
+        <button onclick="window.location.href = 'HomeInstructor'" >Home </button>
         <h1>Check grade</h1>
-       
         <h4> ${requestScope.group.name} (${requestScope.group.couse.code}-${requestScope.group.couse.name})</h4>
+        <div style="color: green">${requestScope.done}</div>
         <form action="Grade" method="post">
             <input type="hidden" name="group" value="${requestScope.group.id}"/>
             <table border="1px">
@@ -60,7 +64,7 @@
                     </c:forEach>
                 </tbody>
             </table>
-                <input type="submit" value="save" onclick="window.confirm('Do you want to save')"/>
+            <input type="submit" value="save" onclick="window.confirm('Do you want to save')"/>
         </form>
     </body>
 </html>

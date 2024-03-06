@@ -19,6 +19,32 @@ import model.Term;
  */
 public class TermDBContext extends DBContext {
 
+    public ArrayList<Term> getAllTermByIns(int insid) {
+        ArrayList<Term> terms = new ArrayList<>();
+        String sql = "SELECT DISTINCT [tid],Terms.name, Terms.[start], Terms.[end]\n"
+                + "  FROM [dbo].[Groups] JOIN Terms ON Groups.tid = Terms.id\n"
+                + "  WHERE insid = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1,  insid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Term t = new Term();
+
+                t.setId(rs.getInt("tid"));
+                t.setName(rs.getString("name"));
+                t.setStart(rs.getDate("start"));
+                t.setEnd(rs.getDate("end"));
+
+                terms.add(t);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TermDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return terms;
+    }
+
     public ArrayList<Term> getAllTermsBySID(int sid) {
         ArrayList<Term> terms = new ArrayList<>();
         String sql = "Select t.id, t.name, t.start, t.[end]\n"
@@ -85,8 +111,8 @@ public class TermDBContext extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
-                  Term t = new Term();
+            if (rs.next()) {
+                Term t = new Term();
 
                 t.setId(rs.getInt("id"));
                 t.setName(rs.getString("name"));

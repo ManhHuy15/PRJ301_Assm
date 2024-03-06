@@ -5,26 +5,30 @@
 package controller.Instructor;
 
 import controller.Authentication.BaseRequiredAuthenticionServlet;
-import dal.SessionsDBContext;
+import dal.CoursesDBContext;
+import dal.GroupsDBContext;
+import dal.TermDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import model.Account;
-import model.Session;
-import model.TimeSlot;
+import model.Course;
+import model.Groups;
+import model.Term;
 import util.DateTimeHelper;
 
 /**
  *
  * @author HUY
  */
-@WebServlet(name = "ScheduleInstructorServlet", urlPatterns = {"/ScheduleInstructor"})
-public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
+@WebServlet(name = "AllGroupServelet", urlPatterns = {"/AllGroup"})
+public class AllGroupServelet extends BaseRequiredAuthenticionServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +47,10 @@ public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ScheduleInstructorServlet</title>");
+            out.println("<title>Servlet AllGroupServelet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ScheduleInstructorServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AllGroupServelet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,37 +68,21 @@ public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
-        if (account.getRole() == 0) {
-            request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
-        }
-
         int insid = account.getUserId();
-        String ymd_raw = request.getParameter("ymd");
-        SessionsDBContext sdb = new SessionsDBContext();
-        ArrayList<TimeSlot> slots = sdb.getAllSlot();
-        Date toDay = new Date();
-        java.sql.Date from = null;
-        java.sql.Date to = null;
-        java.sql.Date date = null;
-        if (ymd_raw == null) {
-            from = DateTimeHelper.convertUtilDateToSqlDate(DateTimeHelper.getWeekStart(toDay));
-            to = DateTimeHelper.convertUtilDateToSqlDate(DateTimeHelper.
-                    addDaysToDate(DateTimeHelper.getWeekStart(toDay), 6));
-            date = DateTimeHelper.convertUtilDateToSqlDate(toDay);
-        } else {
-            Date ymd = java.sql.Date.valueOf(ymd_raw);
-            from = DateTimeHelper.convertUtilDateToSqlDate(DateTimeHelper.getWeekStart(ymd));
-            to = DateTimeHelper.convertUtilDateToSqlDate(DateTimeHelper.
-                    addDaysToDate(from, 6));
-            date = DateTimeHelper.convertUtilDateToSqlDate(ymd);
-        }
-        ArrayList<java.sql.Date> dates = DateTimeHelper.getDatesBetween(from, to);
-        ArrayList<Session> sessions = sdb.getSessionsInsFromTo(insid, from, to);
-        request.setAttribute("slots", slots);
-        request.setAttribute("date", date);
-        request.setAttribute("dates", dates);
-        request.setAttribute("sessions", sessions);
-        request.getRequestDispatcher("Instructor/viewSchedule.jsp").forward(request, response);
+
+        TermDBContext tdb = new TermDBContext();
+        CoursesDBContext cdb = new CoursesDBContext();
+
+        ArrayList<Term> terms = tdb.getAllTermByIns(insid);
+        Date today = new Date();
+        java.sql.Date sqltoDay = DateTimeHelper.convertUtilDateToSqlDate(today);
+        Term t = tdb.getTermByDate(sqltoDay);
+        ArrayList<Course> courses = cdb.getCoursesByInsAndTerm(insid, t.getId());
+
+        request.setAttribute("t", t.getId());
+        request.setAttribute("course", courses);
+        request.setAttribute("terms", terms);
+        request.getRequestDispatcher("Instructor/viewAllGroup.jsp").forward(request, response);
     }
 
     /**
@@ -108,7 +96,34 @@ public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int insid = account.getUserId();
+        int tid = Integer.parseInt(request.getParameter("term"));
+        int cid = -1;
+        if (request.getParameter("cid") != null) {
+            cid = Integer.parseInt(request.getParameter("cid"));
+        }
+        int gid = -1;
+        if (request.getParameter("gid") != null) {
+            gid = Integer.parseInt(request.getParameter("gid"));
+        }
+
+        TermDBContext tdb = new TermDBContext();
+        GroupsDBContext gdb = new GroupsDBContext();
+        CoursesDBContext cdb = new CoursesDBContext();
+
+        ArrayList<Term> terms = tdb.getAllTermByIns(insid);
+        Term t = tdb.getTermById(tid);
+        ArrayList<Groups> groupses = gdb.getGroupsByTermAndIns(t, insid, cid);
+        ArrayList<Course> courses = cdb.getCoursesByInsAndTerm(insid, tid);
+        Groups groupStudent = gdb.getGroupsById(gid);
+        request.setAttribute("t", tid);
+        request.setAttribute("c", cid);
+        request.setAttribute("g", gid);
+        request.setAttribute("groupStudent", groupStudent);
+        request.setAttribute("groups", groupses);
+        request.setAttribute("terms", terms);
+        request.setAttribute("course", courses);
+        request.getRequestDispatcher("Instructor/viewAllGroup.jsp").forward(request, response);
     }
 
     /**

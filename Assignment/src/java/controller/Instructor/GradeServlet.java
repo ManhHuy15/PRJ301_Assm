@@ -4,21 +4,19 @@
  */
 package controller.Instructor;
 
+import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.AssessmentDBContex;
-import dal.CoursesDBContext;
 import dal.GradeDBContext;
 import dal.GroupsDBContext;
-import dal.StudentDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import model.Account;
 import model.Assessment;
-import model.Course;
 import model.CourseGrade;
 import model.Groups;
 import model.Instructor;
@@ -29,13 +27,13 @@ import model.Student;
  * @author HUY
  */
 @WebServlet(name = "GradeServlet", urlPatterns = {"/Grade"})
-public class GradeServlet extends HttpServlet {
+public class GradeServlet extends BaseRequiredAuthenticionServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
-        int insid = 1;
-        int gid = 1; // group
+        int insid = account.getUserId();
+        int gid = Integer.parseInt(request.getParameter("gid")); // group
         GradeDBContext gdb = new GradeDBContext();
         GroupsDBContext groupsdb = new GroupsDBContext();
         AssessmentDBContex adb = new AssessmentDBContex();
@@ -50,9 +48,9 @@ public class GradeServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
-        int insid = 1;
+        int insid = account.getUserId();
         int gid = Integer.parseInt(request.getParameter("group"));
         GradeDBContext gdb = new GradeDBContext();
         GroupsDBContext groupsdb = new GroupsDBContext();
@@ -62,7 +60,6 @@ public class GradeServlet extends HttpServlet {
 
         Groups g = groupsdb.getGroupsById(gid);
         ArrayList<CourseGrade> grades = gdb.getCourseGradesByCid(g.getCouse().getId());
-        ArrayList<Assessment> assessments = adb.listAssessmentsbyInsid(insid, g.getCouse().getId());
 
         for (CourseGrade courseGrade : grades) {
             for (Student student : g.getListStudent()) {
@@ -89,10 +86,12 @@ public class GradeServlet extends HttpServlet {
         }
 
         adb.insertAssessment(checkAssessments);
-//        request.setAttribute("group", g);
-//        request.setAttribute("grades", grades);
-//        request.setAttribute("assessments", assessments);
-//        request.getRequestDispatcher("Instructor/checkGrade.jsp").forward(request, response);
+        ArrayList<Assessment> assessments = adb.listAssessmentsbyInsid(insid, g.getCouse().getId());
+        request.setAttribute("group", g);
+        request.setAttribute("grades", grades);
+        request.setAttribute("assessments", assessments);
+        request.setAttribute("done", "Grading successfuly");
+        request.getRequestDispatcher("Instructor/checkGrade.jsp").forward(request, response);
     }
 
 }

@@ -83,7 +83,6 @@ public class MarkReportStudentServlet extends BaseRequiredAuthenticionServlet {
         Term t = tdb.getTermByDate(sqltoDay);
 
         ArrayList<Groups> groupses = gdb.getGroupsByTermAndSID(t, sid);// lasy stuid trong session
-
         request.setAttribute("t", t.getId());
         request.setAttribute("groups", groupses);
         request.setAttribute("terms", terms);

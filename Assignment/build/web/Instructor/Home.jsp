@@ -65,6 +65,7 @@
     <div class="container">
         <h2 class="title">FPT University Academic Portal</h2>
         <a href="ScheduleInstructor" class="button">View Time Table</a>
+        <a href="AllGroup" class="button">View All Group</a>
     </div>
 </body>
 </html>
