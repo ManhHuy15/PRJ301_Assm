@@ -4,6 +4,7 @@
  */
 package controller.Instructor;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.AttendantDBContext;
 import dal.StudentDBContext;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import model.Account;
 import model.Attendant;
+import model.Role;
 import model.Session;
 import model.Student;
 
@@ -23,11 +25,11 @@ import model.Student;
  * @author HUY
  */
 @WebServlet(name = "CheckAttendServlet", urlPatterns = {"/CheckAttend"})
-public class CheckAttendServlet extends BaseRequiredAuthenticionServlet {
+public class CheckAttendServlet extends BaseRBACServlet {
 
    
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int sesid = Integer.parseInt(request.getParameter("id"));
         AttendantDBContext attDb = new AttendantDBContext();
@@ -37,7 +39,7 @@ public class CheckAttendServlet extends BaseRequiredAuthenticionServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int sesid = Integer.parseInt(request.getParameter("id"));
         StudentDBContext sdb = new StudentDBContext();

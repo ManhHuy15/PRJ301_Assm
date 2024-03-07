@@ -4,6 +4,7 @@
  */
 package controller.Instructor;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.AssessmentDBContex;
 import dal.GradeDBContext;
@@ -20,6 +21,7 @@ import model.Assessment;
 import model.CourseGrade;
 import model.Groups;
 import model.Instructor;
+import model.Role;
 import model.Student;
 
 /**
@@ -27,10 +29,10 @@ import model.Student;
  * @author HUY
  */
 @WebServlet(name = "GradeServlet", urlPatterns = {"/Grade"})
-public class GradeServlet extends BaseRequiredAuthenticionServlet {
+public class GradeServlet extends BaseRBACServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
         int gid = Integer.parseInt(request.getParameter("gid")); // group
@@ -48,7 +50,7 @@ public class GradeServlet extends BaseRequiredAuthenticionServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
         int gid = Integer.parseInt(request.getParameter("group"));

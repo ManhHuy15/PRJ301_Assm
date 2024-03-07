@@ -4,6 +4,7 @@
  */
 package controller.Instructor;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.CoursesDBContext;
 import dal.GroupsDBContext;
@@ -20,6 +21,7 @@ import java.util.Date;
 import model.Account;
 import model.Course;
 import model.Groups;
+import model.Role;
 import model.Term;
 import util.DateTimeHelper;
 
@@ -28,7 +30,7 @@ import util.DateTimeHelper;
  * @author HUY
  */
 @WebServlet(name = "AllGroupServelet", urlPatterns = {"/AllGroup"})
-public class AllGroupServelet extends BaseRequiredAuthenticionServlet {
+public class AllGroupServelet extends BaseRBACServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -66,7 +68,7 @@ public class AllGroupServelet extends BaseRequiredAuthenticionServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
 
@@ -94,7 +96,7 @@ public class AllGroupServelet extends BaseRequiredAuthenticionServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
         int tid = Integer.parseInt(request.getParameter("term"));

@@ -5,6 +5,7 @@
 
 package controller.Instructor;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,17 +14,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import model.Account;
+import model.Role;
 
 /**
  *
  * @author HUY
  */
 @WebServlet(name="HomeInstructorServlet", urlPatterns={"/HomeInstructor"})
-public class HomeInstructorServlet extends BaseRequiredAuthenticionServlet {
+public class HomeInstructorServlet extends BaseRBACServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account )
+    protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account,ArrayList<Role> Roles )
     throws ServletException, IOException {
          if(account.getRole() == 0){
             request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
@@ -31,7 +34,7 @@ public class HomeInstructorServlet extends BaseRequiredAuthenticionServlet {
         request.getRequestDispatcher("Instructor/Home.jsp").forward(request, response);
     } 
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response,Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response,Account account,ArrayList<Role> Roles)
     throws ServletException, IOException {
       
     }

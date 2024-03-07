@@ -4,6 +4,7 @@
  */
 package controller.Instructor;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.SessionsDBContext;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import model.Account;
+import model.Role;
 import model.Session;
 import model.TimeSlot;
 import util.DateTimeHelper;
@@ -24,7 +26,7 @@ import util.DateTimeHelper;
  * @author HUY
  */
 @WebServlet(name = "ScheduleInstructorServlet", urlPatterns = {"/ScheduleInstructor"})
-public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
+public class ScheduleInstructorServlet extends BaseRBACServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -62,7 +64,7 @@ public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         if (account.getRole() == 0) {
             request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
@@ -102,11 +104,12 @@ public class ScheduleInstructorServlet extends BaseRequiredAuthenticionServlet {
      *
      * @param request servlet request
      * @param response servlet response
+     * @param account
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
             throws ServletException, IOException {
         processRequest(request, response);
     }

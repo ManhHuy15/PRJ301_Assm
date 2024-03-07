@@ -26,7 +26,7 @@
 
             .option {
                 flex: 1;
-                max-width: 700px;
+                max-width: 650px;
                 margin-right: 20px;
                 background-color: #fff;
                 padding: 20px;

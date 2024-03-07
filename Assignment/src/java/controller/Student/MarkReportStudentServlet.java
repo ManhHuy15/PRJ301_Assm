@@ -4,7 +4,7 @@
  */
 package controller.Student;
 
-import controller.Authentication.BaseRequiredAuthenticionServlet;
+import controller.Authentication.BaseRBACServlet;
 import dal.AssessmentDBContex;
 import dal.GradeDBContext;
 import dal.GroupsDBContext;
@@ -21,6 +21,7 @@ import model.Account;
 import model.Assessment;
 import model.CourseGrade;
 import model.Groups;
+import model.Role;
 import model.Term;
 import util.DateTimeHelper;
 
@@ -29,7 +30,7 @@ import util.DateTimeHelper;
  * @author HUY
  */
 @WebServlet(name = "MarkReportStudentServlet", urlPatterns = {"/MarkReportStudent"})
-public class MarkReportStudentServlet extends BaseRequiredAuthenticionServlet {
+public class MarkReportStudentServlet extends BaseRBACServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,7 +68,7 @@ public class MarkReportStudentServlet extends BaseRequiredAuthenticionServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
         if (account.getRole() == 1) {
             request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
@@ -98,7 +99,7 @@ public class MarkReportStudentServlet extends BaseRequiredAuthenticionServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
         if (account.getRole() == 1) {
             request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
