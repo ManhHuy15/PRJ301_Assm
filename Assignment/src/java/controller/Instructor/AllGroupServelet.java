@@ -5,23 +5,26 @@
 package controller.Instructor;
 
 import controller.Authentication.BaseRBACServlet;
-import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.CoursesDBContext;
 import dal.GroupsDBContext;
+import dal.SessionsDBContext;
 import dal.TermDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import model.Account;
 import model.Course;
 import model.Groups;
 import model.Role;
+import model.Session;
+import model.Student;
 import model.Term;
 import util.DateTimeHelper;
 
@@ -68,7 +71,7 @@ public class AllGroupServelet extends BaseRBACServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
 
@@ -96,7 +99,7 @@ public class AllGroupServelet extends BaseRBACServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account,ArrayList<Role> Roles)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
         int insid = account.getUserId();
         int tid = Integer.parseInt(request.getParameter("term"));
@@ -109,6 +112,7 @@ public class AllGroupServelet extends BaseRBACServlet {
             gid = Integer.parseInt(request.getParameter("gid"));
         }
 
+        SessionsDBContext sdb = new SessionsDBContext();
         TermDBContext tdb = new TermDBContext();
         GroupsDBContext gdb = new GroupsDBContext();
         CoursesDBContext cdb = new CoursesDBContext();
@@ -118,9 +122,19 @@ public class AllGroupServelet extends BaseRBACServlet {
         ArrayList<Groups> groupses = gdb.getGroupsByTermAndIns(t, insid, cid);
         ArrayList<Course> courses = cdb.getCoursesByInsAndTerm(insid, tid);
         Groups groupStudent = gdb.getGroupsById(gid);
+
+        Map<Integer, Float> mapPercentAbsent = new HashMap<>();
+        int numberCourse = sdb.numberCourseSesion(cid, tid);
+        for (Student s : groupStudent.getListStudent()) {
+            int nummberAbsent = sdb.numberAbsent(s.getId(), cid);
+            float percent =Math.round(((float)nummberAbsent / numberCourse)*100.0 );
+            mapPercentAbsent.put(s.getId(), percent);
+        }
+
         request.setAttribute("t", tid);
         request.setAttribute("c", cid);
         request.setAttribute("g", gid);
+        request.setAttribute("percentAbsent", mapPercentAbsent);
         request.setAttribute("groupStudent", groupStudent);
         request.setAttribute("groups", groupses);
         request.setAttribute("terms", terms);

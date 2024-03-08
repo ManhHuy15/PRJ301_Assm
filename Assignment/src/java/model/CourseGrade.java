@@ -12,7 +12,7 @@ public class CourseGrade {
     private Grade grade;
     private Course course;
     private float weight;
-    private String required;
+    private int required;
 
     public Grade getGrade() {
         return grade;
@@ -38,11 +38,11 @@ public class CourseGrade {
         this.weight = weight;
     }
 
-    public String getRequired() {
+    public int getRequired() {
         return required;
     }
 
-    public void setRequired(String required) {
+    public void setRequired(int required) {
         this.required = required;
     }
     

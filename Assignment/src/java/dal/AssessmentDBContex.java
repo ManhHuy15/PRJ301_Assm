@@ -50,7 +50,7 @@ public class AssessmentDBContex extends DBContext {
             for (Assessment ass : checkAssessments) {
                 st.setFloat(1, ass.getScore());
                 st.setFloat(2, ass.getWeight());
-                st.setString(3, ass.getRequired());
+                st.setInt(3, ass.getRequired());
                 st.setInt(4, ass.getStudent().getId());
                 st.setInt(5, ass.getIns().getId());
                 st.setInt(6, ass.getGrade().getId());
@@ -109,7 +109,7 @@ public class AssessmentDBContex extends DBContext {
                 Assessment a = new Assessment();
                 a.setId(rs.getInt("id"));
                 a.setScore(rs.getFloat("score"));
-                a.setRequired(rs.getString("required"));
+                a.setRequired(rs.getInt("required"));
                 a.setWeight(rs.getFloat("weight"));
 
                 a.setDateRecord(rs.getDate("dateRecord"));
@@ -165,7 +165,7 @@ public class AssessmentDBContex extends DBContext {
                 Assessment a = new Assessment();
                 a.setId(rs.getInt("id"));
                 a.setScore(rs.getFloat("score"));
-                a.setRequired(rs.getString("required"));
+                a.setRequired(rs.getInt("required"));
                 a.setWeight(rs.getFloat("weight"));
                 Student s = new Student();
                 s.setId(rs.getInt("sid"));

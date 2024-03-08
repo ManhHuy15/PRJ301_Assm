@@ -71,6 +71,7 @@
                         <td>First Name</td>
                         <td>Mid Name</td>
                         <td>Last Name</td>
+                        <td>Absent</td>
                         <td>Gender</td>
                         <td>Email</td>
                     </tr>
@@ -83,6 +84,9 @@
                             <td>${s.fname}</td>
                             <td>${s.mname}</td>
                             <td>${s.lname}</td>
+                            <c:forEach items="${requestScope.percentAbsent}" var="abs">
+                                <c:if test="${s.id == abs.key}"><td>${abs.value}%</td></c:if>
+                            </c:forEach>
                             <c:if test="${s.gender}"><td>Male</td></c:if>
                             <c:if test="${!s.gender}"><td>Female</td></c:if>
                             <td>${s.email}</td>

@@ -35,7 +35,7 @@
                 <td>Student code</td>
                 <td>Student Name</td>
                 <c:forEach items="${requestScope.grades}" var="g"> 
-                    <td>${g.grade.id}-${g.grade.name}-${g.weight}</td>
+                    <td>${g.grade.name}-${Math.round(g.weight*10000)/100}%</td>
                 </c:forEach>
                 </thead>
                 <c:set var = "no" value = "${1}"/>

@@ -49,7 +49,7 @@ public class GradeDBContext extends DBContext {
                 cg.setGrade(g);
 
                 cg.setWeight(rs.getFloat("weight"));
-                cg.setRequired(rs.getString("required"));
+                cg.setRequired(rs.getInt("required"));
                 grades.add(cg);
             }
         } catch (SQLException ex) {

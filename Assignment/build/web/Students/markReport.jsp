@@ -149,7 +149,7 @@
                                 <tr>
                                     <td>${cg.grade.cate.name}</td>
                                     <td>${cg.grade.name}</td>
-                                    <td class="weight" value="${cg.weight}">${cg.weight}</td>
+                                    <td class="weight" value="${cg.weight}">${Math.round(cg.weight*10000)/100}%</td>
                                     <c:forEach items="${requestScope.asses}" var="ase">
                                         <c:if test="${cg.grade.id == ase.grade.id }">
                                             <td class="score" value="${ase.score}">${ase.score}</td>
@@ -168,11 +168,11 @@
                                 <td></td>
                                 <td >STATUS: </td>
                                 <c:choose>
-                                    <c:when test="${requestScope.avg >= 5}">
-                                        <td  style="color: green">PASS</td>
+                                    <c:when test="${requestScope.avg >= 5 and requestScope.status.equals('PASS')}">
+                                        <td  style="color: green">${requestScope.status}</td>
                                     </c:when>
                                     <c:otherwise>
-                                        <td  style="color: red">NOT PASS</td>
+                                        <td  style="color: red">${requestScope.status}</td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>

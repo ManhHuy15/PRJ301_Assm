@@ -6,10 +6,8 @@ package controller.Authentication;
 
 import dal.RoleDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ public abstract class BaseRBACServlet extends BaseRequiredAuthenticionServlet {
 
     private ArrayList<Role> getRoles(HttpServletRequest request, Account account) {
         String url = request.getServletPath();
+        String querry = request.getQueryString();
+        System.out.println(querry);
         System.out.println(request.getServletPath());
         RoleDBContext db = new RoleDBContext();
         return db.getByAccIdAndUrl(account.getId(), url);

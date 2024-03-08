@@ -38,6 +38,45 @@ public class SessionsDBContext extends DBContext {
         return 0;
     }
 
+    public int numberAbsent(int stuid, int cid) {
+        int number = 0;
+        String sql = "SELECT COUNT(isatt.id) AS numberAbsent\n"
+                + "FROM IsAttend isatt JOIN [Sessions] s ON isatt.sesid = s.id\n"
+                + "	JOIN Groups g ON s.gid = g.id\n"
+                + "WHERE stuid = ? and g.cid = ? AND status = 1";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, stuid);
+            st.setInt(2, cid);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                number = rs.getInt("numberAbsent");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionsDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return number;
+    }
+
+    public int numberCourseSesion(int cid, int term) {
+        int number = 0;
+        String sql = "SELECT COUNT(s.id) AS numberSession\n"
+                + "FROM [Sessions] s JOIN Groups g ON s.gid = g.id\n"
+                + "WHERE cid = ? and g.tid = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, cid);
+            st.setInt(2, term);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                number = rs.getInt("numberSession");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SessionsDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return number;
+    }
+
     public TimeSlot getSlotByID(int id) {
         String sql = "SELECT [id]\n"
                 + "      ,[start]\n"
@@ -99,7 +138,7 @@ public class SessionsDBContext extends DBContext {
                 + "	JOIN Rooms r ON ses.rid = r.id\n"
                 + "	JOIN Courses c ON g.cid = c.id \n"
                 + "	LEFT JOIN IsAttend a ON A.sesid = ses.id AND s.id = a.stuid\n"
-                + "WHERE s.id = ? AND ses.dateTime >= ? AND ses.dateTime <= ?"; 
+                + "WHERE s.id = ? AND ses.dateTime >= ? AND ses.dateTime <= ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, sid);
@@ -116,10 +155,9 @@ public class SessionsDBContext extends DBContext {
                 g.setName(rs.getString("groupName"));
                 s.setGroup(g);
 
-               // Instructor i = new Instructor();
-             //   i.setId(rs.getInt("insid"));
-               // s.setIns(i);
-
+                // Instructor i = new Instructor();
+                //   i.setId(rs.getInt("insid"));
+                // s.setIns(i);
                 Course c = new Course();
                 c.setId(rs.getInt("cid"));
                 c.setCode(rs.getString("course"));
@@ -131,10 +169,10 @@ public class SessionsDBContext extends DBContext {
                 ts.setEnd(rs.getString("end"));
                 s.setSlot(ts);
 
-                s.setRoom(rs.getString("room"));    
+                s.setRoom(rs.getString("room"));
                 s.setDateTime(rs.getDate("dateTime"));
-                
-                if(rs.getInt("aid") != 0){
+
+                if (rs.getInt("aid") != 0) {
                     s.setStatus(rs.getInt("status"));
                 }
                 sessions.add(s);
@@ -196,59 +234,10 @@ public class SessionsDBContext extends DBContext {
         return sessions;
     }
 
-  
-}
-
-    /*
-      public ArrayList<Session> getSessionsStudentFromTo(int sid, Date from, Date to) {
-        ArrayList<Session> sessions = new ArrayList<>();
-        String sql = "SELECT i.id,g.id as gid ,g.name as groupName, [status], ins.id as insid, ins.[code] as insCode ,c.id as cid, c.code as course,s.dateTime,t.id as slot, [start], [end] , r.name as rooms\n"
-                + "FROM IsAttend i JOIN [Sessions] s ON i.sesid = s.id \n"
-                + "	JOIN Groups g ON  s.gid = g.id \n"
-                + "	JOIN Courses c ON g.cid = c.id\n"
-                + "	JOIN Instructors ins ON ins.id = s.insid\n"
-                + "	JOIN TimeSlot t ON s.tid = t.id\n"
-                + "	JOIN Rooms r ON s.rid = r.id\n"
-                + "WHERE stuid = ? AND s.dateTime >=? AND s.dateTime <= ?";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, sid);
-            st.setDate(2, from);
-            st.setDate(3, to);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                Session s = new Session();
-                s.setId(rs.getInt("id"));
-                s.setStatus(rs.getInt("status"));
-
-                Groups g = new Groups();
-                g.setId(rs.getInt("gid"));
-                g.setName(rs.getString("groupName"));
-                s.setGroup(g);
-
-                Instructor i = new Instructor();
-                i.setId(rs.getInt("insid"));
-                i.setCode(rs.getString("insCode"));
-                s.setIns(i);
-
-                Course c = new Course();
-                c.setId(rs.getInt("cid"));
-                c.setCode(rs.getString("course"));
-                s.setCourse(c);
-
-                TimeSlot ts = new TimeSlot();
-                ts.setId(rs.getInt("slot"));
-                ts.setStart(rs.getString("start"));
-                ts.setEnd(rs.getString("end"));
-                s.setSlot(ts);
-
-                s.setRoom(rs.getString("rooms"));
-                s.setDateTime(rs.getDate("dateTime"));
-                sessions.add(s);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(SessionsDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return sessions;
+    public static void main(String[] args) {
+        SessionsDBContext sdb = new SessionsDBContext();
+        System.out.println((float)sdb.numberAbsent(1, 16)/sdb.numberCourseSesion(16, 4) * 100 );
+        System.out.println(sdb.numberCourseSesion(16, 4));
+        
     }
-     */
+}

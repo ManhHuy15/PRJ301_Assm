@@ -20,7 +20,7 @@ public class Assessment {
     private int id;
     private float score;
     private float weight;
-    private String required;
+    private int required;
     private Student student;
     private Instructor ins;
     private Grade grade;
@@ -51,11 +51,11 @@ public class Assessment {
         this.weight = weight;
     }
 
-    public String getRequired() {
+    public int getRequired() {
         return required;
     }
 
-    public void setRequired(String required) {
+    public void setRequired(int required) {
         this.required = required;
     }
 

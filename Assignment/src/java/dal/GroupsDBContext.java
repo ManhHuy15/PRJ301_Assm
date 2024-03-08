@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import model.Course;
 import model.Term;
 import model.Groups;
+import model.Instructor;
 import model.Student;
 
 /**
@@ -29,12 +30,12 @@ public class GroupsDBContext extends DBContext {
                 + "      ,[insid]\n"
                 + "      ,[tid], c.code,c.name as courseName\n"
                 + "  FROM [dbo].[Groups] g JOIN Courses c ON g.cid = c.id \n"
-                + "  WHERE insid = ? AND tid = ? AND cid = ?" ;
+                + "  WHERE insid = ? AND tid = ? AND cid = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, insid);
             st.setInt(2, T.getId());
-            st.setInt(3,cid);
+            st.setInt(3, cid);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 Groups g = new Groups();
@@ -95,11 +96,14 @@ public class GroupsDBContext extends DBContext {
         g.setId(gid);
 
         ArrayList<Student> students = new ArrayList<>();
-        String sql = "SELECT g.id, g.name, g.cid,c.code as courseCode, c.name as courseName , hg.sid, s.code, s.first_name,s.mid_name,s.last_name,s.isGender,s.email\n"
+        String sql = "SELECT g.id, g.name, cid, c.name as courseName, c.code as courseCode, insid, i.code as InsCode, tid, t.name as term\n"
+                + "	,sid,s.code as studentCode, s.first_name, s.mid_name, s.last_name,  s.isGender, s.email\n"
                 + "FROM Groups g JOIN HasGroup hg ON g.id = hg.gid\n"
-                + "	JOIN Courses c ON g.cid = c.id\n"
                 + "	JOIN Students s ON hg.sid = s.id\n"
-                + "WHERE g.id = ? ";
+                + "	JOIN Courses c ON g.cid = c.id\n"
+                + "	JOIN Instructors i ON i.id  = g.insid\n"
+                + "	JOIN Terms t ON g.tid = t.id\n"
+                + "WHERE gid = ? ";
 
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -115,15 +119,26 @@ public class GroupsDBContext extends DBContext {
                 c.setName(rs.getString("courseName"));
                 g.setCouse(c);
 
+                Instructor i = new Instructor();
+                i.setId(rs.getInt("insid"));
+                i.setCode(rs.getString("InsCode"));
+                g.setIns(i);
+
                 Student s = new Student();
                 s.setId(rs.getInt("sid"));
-                s.setCode(rs.getString("code"));
+                s.setCode(rs.getString("studentCode"));
                 s.setFname(rs.getString("first_name"));
                 s.setMname(rs.getString("mid_name"));
                 s.setLname(rs.getString("last_name"));
                 s.setGender(rs.getBoolean("isGender"));
                 s.setEmail(rs.getString("email"));
                 students.add(s);
+
+                Term t = new Term();
+                t.setId(rs.getInt("tid"));
+                t.setName(rs.getString("term"));
+                g.setTerm(t);
+
             }
             g.setListStudent(students);
         } catch (SQLException ex) {

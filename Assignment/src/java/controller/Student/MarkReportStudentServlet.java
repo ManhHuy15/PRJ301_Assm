@@ -32,41 +32,6 @@ import util.DateTimeHelper;
 @WebServlet(name = "MarkReportStudentServlet", urlPatterns = {"/MarkReportStudent"})
 public class MarkReportStudentServlet extends BaseRBACServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet MarkReportStudentServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet MarkReportStudentServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
@@ -90,14 +55,6 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
         request.getRequestDispatcher("Students/markReport.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
@@ -125,9 +82,10 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
         ArrayList<Groups> groupses = gdb.getGroupsByTermAndSID(t, sid);// lasy stuid trong session
 
         double avg = 0;
-
+        String status = "NOT PASS";
         if (asses.size() == courseGrades.size()) {
             avg = (double) Math.round(calculatorAvg(asses) * 100) / 100;
+            status = checkStatus(asses, avg);
         }
         request.setAttribute("t", tid);
         request.setAttribute("c", cid);
@@ -136,6 +94,7 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
         request.setAttribute("terms", terms);
         request.setAttribute("asses", asses);
         request.setAttribute("avg", avg);
+        request.setAttribute("status", status);
         request.getRequestDispatcher("Students/markReport.jsp").forward(request, response);
     }
 
@@ -147,14 +106,23 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
         return avg;
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    private String checkStatus(ArrayList<Assessment> asses, double avg) {
+        String status = "PASS";
+        if (avg < 5) {
+            status = "NOT PASS";
+        } else {
+            for (Assessment asse : asses) {
+                if (asse.getRequired() == 0) {
+                    if (asse.getScore() == asse.getRequired()) {
+                        status = "NOT PASS";
+                        break;
+                    }
+                } else if (asse.getScore() < asse.getRequired()) {
+                    status = "NOT PASS";
+                    break;
+                }
+            }
+        }
+        return status;
+    }
 }
