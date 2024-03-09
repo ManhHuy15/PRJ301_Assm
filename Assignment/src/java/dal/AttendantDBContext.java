@@ -23,23 +23,25 @@ public class AttendantDBContext extends DBContext {
 
     public void checkAttendBySession(int sesid, ArrayList<Attendant> attendance) {
         ArrayList<Attendant> sqlAtt = getAttendant(sesid);
-        System.out.println(sqlAtt.size());
+        //System.out.println(sqlAtt.size());
         for (Attendant attend : attendance) {
             if (sqlAtt.isEmpty()) {
-                System.out.println(attend.getStudent().getId() + " insert");
+                //System.out.println(attend.getStudent().getId() + " insert");
                 insertAttend(attend);
             } else {
                 for (Attendant sqlatt : sqlAtt) {
-                    System.out.println("asdasd");
+                    //System.out.println("asdasd");
                     if (attend.getStudent().getId() == sqlatt.getStudent().getId()) {
-                        System.out.println(attend.getStudent().getId() + " update");
+
+                        //System.out.println(attend.getStudent().getId() + " update");
                         updateAttend(attend, sesid, attend.getStudent().getId());
                         sqlAtt.remove(sqlatt);
                         break;
                     } else {
-                        System.out.println(attend.getStudent().getId() + " insert");
+
+                       // System.out.println(attend.getStudent().getId() + " insert");
                         insertAttend(attend);
-                         sqlAtt.remove(sqlatt);
+                        sqlAtt.remove(sqlatt);
                         break;
                     }
                 }

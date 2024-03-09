@@ -24,8 +24,8 @@ public abstract class BaseRBACServlet extends BaseRequiredAuthenticionServlet {
     private ArrayList<Role> getRoles(HttpServletRequest request, Account account) {
         String url = request.getServletPath();
         String querry = request.getQueryString();
-        System.out.println(querry);
-        System.out.println(request.getServletPath());
+                //System.out.println(querry);
+                //System.out.println(request.getServletPath());
         RoleDBContext db = new RoleDBContext();
         return db.getByAccIdAndUrl(account.getId(), url);
     }
