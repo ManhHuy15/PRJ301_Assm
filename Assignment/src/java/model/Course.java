@@ -13,7 +13,7 @@ public class Course {
     private String code;
     private String name;
     private int did;
-    private int detailid;
+    private DetailCourse detail;
     
     public int getId() {
         return id;
@@ -47,13 +47,14 @@ public class Course {
         this.did = did;
     }
 
-    public int getDetailid() {
-        return detailid;
+    public DetailCourse getDetail() {
+        return detail;
     }
 
-    public void setDetailid(int detailid) {
-        this.detailid = detailid;
+    public void setDetail(DetailCourse detail) {
+        this.detail = detail;
     }
+
     
     
 }

@@ -11,6 +11,67 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <style>
+            /* Style for the top bar */
+            .topbar {
+                background-color: #333; /* Dark background color */
+                color: white; /* Text color */
+                padding: 10px; /* Add padding */
+            }
+
+            /* Style for the button */
+            button {
+                background-color: #4CAF50; /* Green background color */
+                border: none; /* Remove border */
+                color: white; /* Text color */
+                padding: 10px 20px; /* Add padding */
+                text-align: center; /* Center text */
+                text-decoration: none; /* Remove underline */
+                font-size: 16px; /* Increase font size */
+                margin: 4px 30px; /* Add margin */
+                cursor: pointer; /* Add cursor pointer */
+            }
+
+            /* Style for the table */
+            table.container {
+                width: 90%; /* Set table width to 80% */
+                margin: 20px auto; /* Center the table horizontally */
+                border-collapse: collapse; /* Collapse table borders */
+            }
+
+            /* Style for table headers */
+            th {
+                background-color: #orange; /* Header background color */
+                color: white; /* Text color */
+                padding: 8px; /* Add padding */
+                text-align: left; /* Align text to the left */
+                border: 1px solid #ddd; /* Add border */
+            }
+
+            /* Style for table cells */
+            td {
+                border: 1px solid #ddd; /* Add border */
+                padding: 8px; /* Add padding */
+                text-align: left; /* Align text to the left */
+            }
+
+            /* Style for alternate row background color */
+            tr:nth-child(even) {
+                background-color: #f2f2f2; /* Alternate row background color */
+            }
+
+            /* Style for student content */
+            .student_content {
+                margin: 20px auto; /* Center the student content horizontally */
+                width: 80%; /* Set student content width to 80% */
+            }
+
+            /* Style for class information */
+            .class_info {
+                font-size: 20px; /* Increase font size */
+            }
+        </style>
+
         <script >
             function callSelecct(tid, cid, gid) {
                 var phref = "AllGroup?term=" + tid;
@@ -30,7 +91,7 @@
         <%@include file="../topbar.jsp" %>
         <button onclick="window.location.href = 'HomeInstructor'" >Home </button>
         <form method="POST" action="AllGroup" id="frm">
-            <table >
+            <table class="container" >
                 <tr style="background-color: orange ">
                     <th>Term</th>
                     <th>Course</th>
@@ -62,8 +123,8 @@
             </table>
         </form>
         <c:if test="${requestScope.groupStudent.id > 0}">
-            <div>
-                <h4>${requestScope.groupStudent.name} <a href="Grade?gid=${requestScope.groupStudent.id}">Grading Course</a></h4>
+            <div class="student_content">
+                <h4 class="class_info">${requestScope.groupStudent.name} <a href="Grade?gid=${requestScope.groupStudent.id}">Grading Course</a></h4>
                 <table border="1px">
                     <tr>
                         <td>No</td>

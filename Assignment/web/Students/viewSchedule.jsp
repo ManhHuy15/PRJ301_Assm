@@ -103,7 +103,7 @@
                                 <td>
                                     <c:forEach items="${requestScope.sessions}" var="sess">
                                         <c:if test="${ (sess.dateTime eq d) and (slot.id eq sess.slot.id) }">
-                                            <a href="GroupInfo?gid=${sess.group.id}" >${sess.course.code}</a> - <a >View Materials</a> </br>
+                                            <a href="GroupInfo?gid=${sess.group.id}" >${sess.course.code}</a> - <a href="SyllabusDetails?course=${sess.course.code}" >View Materials</a> </br>
                                             at ${sess.room}</br> 
                                             <c:if test="${sess.status == 0}"> <span<a style="color: red; font-family: sans-serif">*Not yet</span> </c:if>
                                             <c:if test="${sess.status == 1}"> <span style="color: red; font-family: sans-serif; font-weight: bold">Absent</span> </c:if>

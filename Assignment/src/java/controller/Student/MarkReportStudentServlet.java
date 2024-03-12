@@ -33,10 +33,7 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
-            throws ServletException, IOException {
-        if (account.getRole() == 1) {
-            request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
-        }
+            throws ServletException, IOException { 
         Account c = (Account) request.getSession().getAttribute("account");
         int sid = c.getUserId();
 
@@ -57,9 +54,6 @@ public class MarkReportStudentServlet extends BaseRBACServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
-        if (account.getRole() == 1) {
-            request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
-        }
         Account c = (Account) request.getSession().getAttribute("account");
         int sid = c.getUserId();
 

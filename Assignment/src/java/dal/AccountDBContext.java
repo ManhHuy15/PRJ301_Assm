@@ -19,7 +19,6 @@ public class AccountDBContext extends DBContext {
         String sql = "SELECT [id]\n"
                 + "      ,[username]\n"
                 + "      ,[password]\n"
-                + "      ,[role]\n"
                 + "      ,[user_id]\n"
                 + "  FROM [dbo].[Accounts]\n"
                 + "  WHERE username = ? AND password = ? ";
@@ -34,7 +33,6 @@ public class AccountDBContext extends DBContext {
                 a.setId(rs.getInt("id"));
                 a.setUsername(rs.getString("username"));
                 a.setPassword(rs.getString("password"));
-                a.setRole(rs.getInt("role"));
                 a.setUserId(rs.getInt("user_id"));
                 
                 return a;

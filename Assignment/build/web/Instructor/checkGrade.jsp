@@ -11,6 +11,80 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <style>
+
+        /* Style for buttons */
+        button {
+            background-color: #4CAF50; /* Green background color */
+            border: none; /* Remove border */
+            color: white; /* Text color */
+            padding: 10px 20px; /* Add padding */
+            text-align: center; /* Center text */
+            text-decoration: none; /* Remove underline */
+            font-size: 16px; /* Increase font size */
+            margin: 4px 0px 4px 20px; /* Add margin */
+            cursor: pointer; /* Add cursor pointer */
+        }
+
+        /* Style for headings */
+        h1, h4 {
+            color: #333; /* Dark text color */
+            margin-left: 40px;
+        }
+
+        /* Style for success message */
+        .success {
+            color: green; /* Green text color */
+        }
+
+        /* Style for table */
+        .tableGrade {
+            border-collapse: collapse; /* Collapse table borders */
+            width: 90%; /* Set table width to 100% */
+            margin: 20px auto; /* Add top margin */
+        }
+
+        /* Style for table headers */
+        .tableGrade th {
+            background-color: #f2f2f2; /* Light gray background color */
+            border: 1px solid #ddd; /* Add border */
+            padding: 8px; /* Add padding */
+            text-align: left; /* Align text to the left */
+        }
+
+        /* Style for table cells */
+        .tableGrade td {
+            border: 1px solid #ddd; /* Add border */
+            padding: 8px; /* Add padding */
+            text-align: left; /* Align text to the left */
+        }
+
+        /* Style for alternate row background color */
+        .tableGrade tbody tr:nth-child(even) {
+            background-color: #f2f2f2; /* Alternate row background color */
+        }
+
+        /* Style for input fields */
+        input[type="number"] {
+            width: 60px; /* Set input width */
+            padding: 5px; /* Add padding */
+            text-align: center; /* Center text */
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 4px; /* Add border radius */
+        }
+
+        /* Style for save button */
+         input[type="submit"] {
+            background-color: #4CAF50; /* Green background color */
+            color: white; /* Text color */
+            padding: 10px 20px; /* Add padding */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Add border radius */
+            cursor: pointer; /* Add cursor pointer */
+            margin: 20px auto; /* Center the button horizontally */
+            display: block; /* Ensure button takes full width */
+        }
+    </style>
         <script>
             function checkInput(input) {
                 if (input.value < 0 || input.value > 10) {
@@ -29,7 +103,7 @@
         <div style="color: green">${requestScope.done}</div>
         <form action="Grade" method="post">
             <input type="hidden" name="group" value="${requestScope.group.id}"/>
-            <table border="1px">
+            <table class="tableGrade" border="1px">
                 <thead>
                 <td>No</td>
                 <td>Student code</td>

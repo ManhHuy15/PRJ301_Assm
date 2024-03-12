@@ -24,10 +24,7 @@ public class HomeInstructorServlet extends BaseRBACServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account,ArrayList<Role> Roles )
-    throws ServletException, IOException {
-         if(account.getRole() == 0){
-            request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
-        }
+    throws ServletException, IOException {       
         request.getRequestDispatcher("Instructor/Home.jsp").forward(request, response);
     } 
     

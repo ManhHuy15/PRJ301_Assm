@@ -66,6 +66,7 @@
         <h2 class="title">FPT University Academic Portal</h2>
         <a href="Schedule" class="button">View Time Table</a>
         <a href="MarkReportStudent" class="button">Mark Report</a>
+        <a href="Syllabus" class="button">Syllabus</a>
     </div>
 </body>
 </html>

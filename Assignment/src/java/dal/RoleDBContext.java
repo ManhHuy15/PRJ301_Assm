@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Account;
 import model.Role;
 
 /**
@@ -17,6 +18,28 @@ import model.Role;
  * @author HUY
  */
 public class RoleDBContext extends DBContext {
+
+    public Role getRoleByAcc(Account a) {
+        String sql = "SELECT r.id, r.roleName\n"
+                + "FROM Accounts a JOIN Account_Role ar ON a.id = ar.accid\n"
+                + "	JOIN Role r ON ar.roleid = r.id \n"
+                + "WHERE a.id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, a.getId());
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                Role r = new Role();
+                r.setId(rs.getInt("id"));
+                r.setName(rs.getString("roleName"));
+                
+                return r;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RoleDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public ArrayList<Role> getByAccIdAndUrl(int accid, String url) {
         ArrayList<Role> roles = new ArrayList<>();

@@ -66,9 +66,6 @@ public class ScheduleStudentServlet extends BaseRBACServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account, ArrayList<Role> Roles)
             throws ServletException, IOException {
         //String sid_raw = request.getParameter("sid");
-        if(account.getRole() == 1){
-            request.getRequestDispatcher("Authentication/Login.jsp").forward(request, response);
-        }
         int sid = account.getUserId();
         Account c = (Account) request.getSession().getAttribute("account");
         String ymd_raw = request.getParameter("ymd");
