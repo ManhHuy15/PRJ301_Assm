@@ -77,16 +77,18 @@ public class LoginServlet extends HttpServlet {
         String pass = request.getParameter("password");
         AccountDBContext adb = new AccountDBContext();
         RoleDBContext rdb = new RoleDBContext();
-        
+
         Account a = adb.getAccountByUserPass(user, pass);
-        a.setRole(rdb.getRoleByAcc(a));
+
         if (a != null) {
             //succsess
+            a.setRole(rdb.getRoleByAcc(a));
             HttpSession session = request.getSession();
             session.setAttribute("account", a);
+
             if (a.getRole().getId() == 2) {
                 //student;
-                
+
 //                 StudentDBContext sdb = new StudentDBContext();
 //                 Student s = sdb.getStudentById(a.getId());
 //                 s.setUsername(user);
@@ -94,8 +96,7 @@ public class LoginServlet extends HttpServlet {
 //                HttpSession session = request.getSession();
 //                session.setAttribute("account", s);
 //                request.getRequestDispatcher("/HomeStudentServlet").forward(request, response);
-
-                    response.sendRedirect("HomeStudent");
+                response.sendRedirect("HomeStudent");
             } else if (a.getRole().getId() == 1) {
                 //instructor
                 response.sendRedirect("HomeInstructor");

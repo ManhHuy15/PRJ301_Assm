@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Attendant;
+import model.Groups;
+import model.Instructor;
 import model.Session;
 import model.Student;
+import model.TimeSlot;
 
 /**
  *
@@ -39,7 +42,7 @@ public class AttendantDBContext extends DBContext {
                         break;
                     } else {
 
-                       // System.out.println(attend.getStudent().getId() + " insert");
+                        // System.out.println(attend.getStudent().getId() + " insert");
                         insertAttend(attend);
                         sqlAtt.remove(sqlatt);
                         break;
@@ -227,6 +230,64 @@ public class AttendantDBContext extends DBContext {
             Logger.getLogger(AttendantDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return atts;
+    }
+
+    //student id, term id , course id
+    public ArrayList<Attendant> getAllAttendBySid(int sid, int tid, int cid) {
+        ArrayList<Attendant> list = new ArrayList<>();
+        String sql = "SELECT hg.gid, g.name AS gname, sess.insid,i.code, sess.id, sess.tid, tl.[start], tl.[end]\n"
+                + "		,sess.rid, r.name, dateTime, a.id as attid, a.status, a.recordTime, a.comment\n"
+                + "FROM Students s JOIN HasGroup hg ON s.id = hg.sid\n"
+                + "	JOIN Groups g ON hg.gid = g.id \n"
+                + "	JOIN Sessions sess ON g.id = sess.gid\n"
+                + "	JOIN TimeSlot tl ON sess.tid = tl.id\n"
+                + "	JOIN Rooms r ON sess.rid = r.id\n"
+                + "	JOIN Instructors i ON sess.insid = i.id\n"
+                + "	LEFT JOIN IsAttend a ON a.stuid =s.id AND a.sesid = sess.id \n"
+                + "WHERE s.id = ? AND g.tid = ? AND g.cid = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, sid);
+            st.setInt(2, tid);
+            st.setInt(3, cid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                Attendant attendant = new Attendant();
+
+                Groups g = new Groups();
+
+                g.setId(rs.getInt("gid"));
+                g.setName(rs.getString("gname"));
+
+                Instructor i = new Instructor();
+                i.setId(rs.getInt("insid"));
+                i.setCode(rs.getString("code"));
+
+                Session session = new Session();
+                session.setId(rs.getInt("id"));
+                session.setRoom(rs.getString("name"));
+                session.setDateTime(rs.getDate("dateTime"));
+                
+                
+                TimeSlot slot = new TimeSlot();
+                slot.setId(rs.getInt("tid"));
+                slot.setStart(rs.getString("start"));
+                slot.setEnd(rs.getString("end"));
+                
+                
+
+                attendant.setId(rs.getInt("attid"));
+                attendant.setStatus(rs.getInt("status"));
+                attendant.setRecordTime(rs.getTimestamp("recordTime"));
+                attendant.setComment(rs.getString("comment"));
+                list.add(attendant);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AttendantDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return list;
     }
 
     public static void main(String[] args) {
