@@ -9,7 +9,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>JSP Page</title>
+    <title>Home</title>
     <style>
         /* Reset default margin and padding */
         * {
@@ -66,6 +66,7 @@
         <h2 class="title">FPT University Academic Portal</h2>
         <a href="Schedule" class="button">View Time Table</a>
         <a href="MarkReportStudent" class="button">Mark Report</a>
+        <a href="CourseAttend" class="button">Attendance Report</a>
         <a href="Syllabus" class="button">Syllabus</a>
     </div>
 </body>

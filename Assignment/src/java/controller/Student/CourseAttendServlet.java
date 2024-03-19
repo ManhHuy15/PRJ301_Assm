@@ -6,16 +6,13 @@
 package controller.Student;
 
 import controller.Authentication.BaseRequiredAuthenticionServlet;
-import dal.AssessmentDBContex;
 import dal.AttendantDBContext;
-import dal.GradeDBContext;
 import dal.GroupsDBContext;
 import dal.TermDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -75,12 +72,12 @@ public class CourseAttendServlet extends BaseRequiredAuthenticionServlet {
         
         TermDBContext tdb = new TermDBContext();
         GroupsDBContext gdb = new GroupsDBContext();
-        ArrayList<Term> terms = tdb.getAllTermsBySID(sid);// laasy o session
+        ArrayList<Term> terms = tdb.getAllTermsBySID(sid);
         Date today = new Date();
         java.sql.Date sqltoDay = DateTimeHelper.convertUtilDateToSqlDate(today);
         Term t = tdb.getTermByDate(sqltoDay);
 
-        ArrayList<Groups> groupses = gdb.getGroupsByTermAndSID(t, sid);// lasy stuid trong session
+        ArrayList<Groups> groupses = gdb.getGroupsByTermAndSID(t, sid);
         request.setAttribute("t", t.getId());
         request.setAttribute("groups", groupses);
         request.setAttribute("terms", terms);
@@ -115,6 +112,17 @@ public class CourseAttendServlet extends BaseRequiredAuthenticionServlet {
         ArrayList<Groups> groupses = gdb.getGroupsByTermAndSID(t, sid);
         ArrayList<Attendant> attendants = adb.getAllAttendBySid(sid, tid, cid);
         
+        
+        int countAbsent = 0;
+        for (Attendant att : attendants) {
+            if(att.getStatus() == 1){
+                countAbsent++;
+            }
+        }
+        float percent =Math.round(((float)countAbsent / attendants.size())*100.0 );
+        
+        request.setAttribute("percent", percent);
+        request.setAttribute("absent", countAbsent);
         request.setAttribute("t", tid);
         request.setAttribute("c", cid);
         request.setAttribute("attendants", attendants);

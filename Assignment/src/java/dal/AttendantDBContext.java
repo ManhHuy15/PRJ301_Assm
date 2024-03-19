@@ -236,7 +236,7 @@ public class AttendantDBContext extends DBContext {
     public ArrayList<Attendant> getAllAttendBySid(int sid, int tid, int cid) {
         ArrayList<Attendant> list = new ArrayList<>();
         String sql = "SELECT hg.gid, g.name AS gname, sess.insid,i.code, sess.id, sess.tid, tl.[start], tl.[end]\n"
-                + "		,sess.rid, r.name, dateTime, a.id as attid, a.status, a.recordTime, a.comment\n"
+                + "		,sess.rid, r.name as room, dateTime, a.id as attid, a.status, a.recordTime, a.comment\n"
                 + "FROM Students s JOIN HasGroup hg ON s.id = hg.sid\n"
                 + "	JOIN Groups g ON hg.gid = g.id \n"
                 + "	JOIN Sessions sess ON g.id = sess.gid\n"
@@ -256,17 +256,17 @@ public class AttendantDBContext extends DBContext {
                 Attendant attendant = new Attendant();
 
                 Groups g = new Groups();
-
                 g.setId(rs.getInt("gid"));
                 g.setName(rs.getString("gname"));
-
+                
+                
                 Instructor i = new Instructor();
                 i.setId(rs.getInt("insid"));
                 i.setCode(rs.getString("code"));
 
                 Session session = new Session();
                 session.setId(rs.getInt("id"));
-                session.setRoom(rs.getString("name"));
+                session.setRoom(rs.getString("room"));
                 session.setDateTime(rs.getDate("dateTime"));
                 
                 
@@ -275,8 +275,11 @@ public class AttendantDBContext extends DBContext {
                 slot.setStart(rs.getString("start"));
                 slot.setEnd(rs.getString("end"));
                 
+                session.setGroup(g);
+                session.setIns(i);
+                session.setSlot(slot);
                 
-
+                attendant.setSession(session);
                 attendant.setId(rs.getInt("attid"));
                 attendant.setStatus(rs.getInt("status"));
                 attendant.setRecordTime(rs.getTimestamp("recordTime"));

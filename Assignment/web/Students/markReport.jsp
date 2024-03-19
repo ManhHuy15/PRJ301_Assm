@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Mark Report</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -73,10 +73,6 @@
                 background-color: #f2f2f2;
             }
 
-            tr:hover {
-                cursor: pointer;
-                background-color: #f9f9f9;
-            }
 
             .average {
                 font-weight: bold;
