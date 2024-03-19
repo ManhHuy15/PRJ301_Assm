@@ -5,6 +5,7 @@
 
 package controller.Student;
 
+import controller.Authentication.BaseRBACServlet;
 import controller.Authentication.BaseRequiredAuthenticionServlet;
 import dal.AttendantDBContext;
 import dal.GroupsDBContext;
@@ -20,6 +21,7 @@ import java.util.Date;
 import model.Account;
 import model.Attendant;
 import model.Groups;
+import model.Role;
 import model.Term;
 import util.DateTimeHelper;
 
@@ -28,7 +30,7 @@ import util.DateTimeHelper;
  * @author HUY
  */
 @WebServlet(name="CourseAttendServlet", urlPatterns={"/CourseAttend"})
-public class CourseAttendServlet extends BaseRequiredAuthenticionServlet {
+public class CourseAttendServlet extends BaseRBACServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -60,11 +62,12 @@ public class CourseAttendServlet extends BaseRequiredAuthenticionServlet {
      * @param request servlet request
      * @param response servlet response
      * @param a
+     * @param Roles
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response,Account a)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response,Account a, ArrayList<Role> Roles)
     throws ServletException, IOException {
         Account c = (Account) request.getSession().getAttribute("account");
         int sid = c.getUserId();
@@ -89,11 +92,12 @@ public class CourseAttendServlet extends BaseRequiredAuthenticionServlet {
      * @param request servlet request
      * @param response servlet response
      * @param a
+     * @param Roles
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response,Account a)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response,Account a, ArrayList<Role> Roles)
     throws ServletException, IOException {
         Account c = (Account) request.getSession().getAttribute("account");
         int sid = c.getUserId();
